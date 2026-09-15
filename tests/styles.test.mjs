@@ -21,3 +21,19 @@ test("stylesheet includes focus, mobile, and reduced-motion handling", () => {
 test("stylesheet does not import external assets", () => {
   assert.doesNotMatch(css, /@import|url\(["']?https?:/i);
 });
+
+test("card entrance animation releases properties for subsequent hover styles", () => {
+  // Source-level guard: no browser is required, but this cannot measure layout.
+  // Keeping an animation's final transform overrides the card's hover transform.
+  const cardRules = css.match(/\.project-card\s*\{([^}]+)\}/)?.[1];
+  assert.ok(cardRules, "card styles exist");
+  const animation = cardRules.match(/animation:\s*([^;]+);/)?.[1];
+  assert.ok(animation, "cards retain their entrance animation");
+  const fillMode = cardRules.match(/animation-fill-mode:\s*([^;]+);/)?.[1]
+    ?? animation.split(/\s+/).find((token) => /^(none|forwards|backwards|both)$/.test(token))
+    ?? "none";
+  assert.ok(
+    !["forwards", "both"].includes(fillMode),
+    `the completed entrance animation must release its transform, got ${fillMode}`,
+  );
+});

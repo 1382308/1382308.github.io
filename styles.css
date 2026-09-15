@@ -348,7 +348,7 @@ footer > * {
   border: 1px solid var(--color-navy);
   border-top: 0.5rem solid var(--category-accent);
   background: var(--color-surface);
-  animation: enter 220ms ease-out both;
+  animation: enter 220ms ease-out backwards;
   transition: transform 160ms ease;
 }
 
