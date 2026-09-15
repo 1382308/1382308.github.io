@@ -223,3 +223,105 @@ export function filterProjects(projects, category) {
   }
   return projects.filter((project) => project.category === category);
 }
+
+const setExternalLinkAttributes = (link, href) => {
+  link.href = href;
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+};
+
+export function renderProjectCard(project) {
+  const article = document.createElement("article");
+  article.className = "project-card";
+  article.dataset.category = project.category;
+
+  const category = document.createElement("p");
+  category.className = "project-card__category";
+  category.textContent = project.category;
+
+  const title = document.createElement("h3");
+  title.className = "project-card__title";
+  title.textContent = project.title;
+
+  const description = document.createElement("p");
+  description.className = "project-card__description";
+  description.textContent = project.description;
+
+  const tags = document.createElement("ul");
+  tags.className = "project-card__tags";
+  tags.setAttribute("aria-label", "Etiquetas");
+  for (const tag of project.tags) {
+    const item = document.createElement("li");
+    item.textContent = tag;
+    tags.append(item);
+  }
+
+  const actions = document.createElement("div");
+  actions.className = "project-card__actions";
+
+  if (project.liveAvailable) {
+    const liveLink = document.createElement("a");
+    liveLink.className = "project-card__primary-action button-primary";
+    liveLink.textContent = "Abrir proyecto";
+    setExternalLinkAttributes(liveLink, project.liveUrl);
+    actions.append(liveLink);
+
+    const repoLink = document.createElement("a");
+    repoLink.className = "project-card__repo-link button-secondary";
+    repoLink.textContent = "Ver repositorio";
+    setExternalLinkAttributes(repoLink, project.repoUrl);
+    actions.append(repoLink);
+  } else {
+    const availability = document.createElement("p");
+    availability.className = "project-card__availability";
+    availability.textContent = "Publicación no disponible";
+
+    const repoLink = document.createElement("a");
+    repoLink.className = "project-card__primary-action button-primary";
+    repoLink.textContent = "Ver repositorio";
+    setExternalLinkAttributes(repoLink, project.repoUrl);
+
+    actions.append(availability, repoLink);
+  }
+
+  article.append(category, title, description, tags, actions);
+  return article;
+}
+
+export function renderCatalog(category = "Todos") {
+  const visibleProjects = filterProjects(PROJECTS, category);
+  const grid = document.querySelector("#project-grid");
+  grid.replaceChildren(...visibleProjects.map(renderProjectCard));
+
+  document.querySelector("#result-status").textContent =
+    `${visibleProjects.length} ${visibleProjects.length === 1 ? "proyecto" : "proyectos"}`;
+
+  document.querySelectorAll("[data-filter]").forEach((button) => {
+    button.setAttribute(
+      "aria-pressed",
+      String(button.dataset.filter === category),
+    );
+  });
+}
+
+validateProjects(PROJECTS);
+
+if (typeof document !== "undefined") {
+  const filterList = document.querySelector("#filter-list");
+
+  for (const category of CATEGORIES) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "filter-button";
+    button.dataset.filter = category;
+    button.textContent = category;
+    button.addEventListener("click", () => renderCatalog(category));
+    filterList.append(button);
+  }
+
+  document.querySelectorAll("[data-project-count]").forEach((count) => {
+    count.textContent = String(PROJECTS.length);
+  });
+
+  renderCatalog("Todos");
+}
