@@ -101,7 +101,7 @@ test("filterProjects returns all projects or one category", () => {
 Run:
 
 ```bash
-node --experimental-default-type=module --test tests/catalog.test.mjs
+node --test tests/catalog.test.mjs
 ```
 
 Expected: FAIL because `script.js` does not exist.
@@ -131,7 +131,7 @@ For each record set `repoUrl` to `https://github.com/1382308/<id>` and set `feat
 Run:
 
 ```bash
-node --experimental-default-type=module --test tests/catalog.test.mjs
+node --test tests/catalog.test.mjs
 ```
 
 Expected: 5 tests PASS.
@@ -249,7 +249,7 @@ Create filter buttons from `CATEGORIES`, bind click handlers to `renderCatalog`,
 Run:
 
 ```bash
-node --experimental-default-type=module --test tests/catalog.test.mjs tests/markup.test.mjs
+node --test tests/catalog.test.mjs tests/markup.test.mjs
 ```
 
 Expected: 8 tests PASS.
@@ -334,7 +334,7 @@ Create `styles.css` with:
 Run:
 
 ```bash
-node --experimental-default-type=module --test tests/*.test.mjs
+node --test tests/*.test.mjs
 ```
 
 Expected: all 11 tests PASS.
@@ -363,7 +363,7 @@ Run:
 
 ```bash
 node --check script.js
-node --experimental-default-type=module --test tests/*.test.mjs
+node --test tests/*.test.mjs
 git diff --check
 ```
 
