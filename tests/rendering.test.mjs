@@ -58,6 +58,7 @@ test("catalog initialization and filter clicks update cards, counts, and pressed
   assert.deepEqual(buttons.map((button) => button.getAttribute("aria-pressed")), [
     "true", "false", "false", "false", "false",
   ]);
+  assert.ok(buttons.every((button) => button.tagName === "button"));
 
   // Published cards expose distinct destinations; the unavailable one does not.
   const linksPerCard = grid.children.map((card) => {
@@ -66,14 +67,16 @@ test("catalog initialization and filter clicks update cards, counts, and pressed
       assert.equal(link.target, "_blank");
       assert.equal(link.rel, "noopener noreferrer");
     }
+    if (links.length === 2) assert.equal(links[1].textContent, "Ver código");
     assert.equal(new Set(links.map((link) => link.href)).size, links.length);
     return links.length;
   });
   assert.deepEqual(linksPerCard, [2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2]);
   const unavailable = descendants(grid.children[7]);
   assert.ok(unavailable.some((node) => node.textContent === "Publicación no disponible"));
-  assert.equal(unavailable.find((node) => node.tagName === "a").href,
-    "https://github.com/1382308/trigonometric-ratios");
+  const unavailableRepository = unavailable.find((node) => node.tagName === "a");
+  assert.equal(unavailableRepository.href, "https://github.com/1382308/trigonometric-ratios");
+  assert.equal(unavailableRepository.textContent, "Ver repositorio");
 
   const expectedCounts = [11, 2, 5, 3, 1];
   for (const [index, button] of buttons.entries()) {

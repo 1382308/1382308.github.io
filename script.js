@@ -268,7 +268,7 @@ export function renderProjectCard(project) {
 
     const repoLink = document.createElement("a");
     repoLink.className = "project-card__repo-link button-secondary";
-    repoLink.textContent = "Ver repositorio";
+    repoLink.textContent = "Ver código";
     setExternalLinkAttributes(repoLink, project.repoUrl);
     actions.append(repoLink);
   } else {
